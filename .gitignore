@@ -1,2 +1,4 @@
 env_flask/
 .idea/
+*.pyc
+*__pycache__*
