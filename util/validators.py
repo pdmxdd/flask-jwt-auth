@@ -1,7 +1,6 @@
 from functools import wraps
 from flask import request
 from util.json_response import make_json_response
-from flask import g
 
 
 def bad_json():
