@@ -6,6 +6,7 @@ from util.json_response import make_json_response
 def bad_json():
     return make_json_response({"status": "error", "body": "incorrect request JSON"}, 400)
 
+
 def missing_json():
     return make_json_response({"status": "error", "body": "JSON missing"}, 400)
 
