@@ -1,6 +1,5 @@
 import unittest
 import requests
-from util.database import reset_database
 
 
 class BpUserTests(unittest.TestCase):
