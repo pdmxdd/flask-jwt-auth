@@ -4,10 +4,15 @@ import requests
 
 class BpUserTests(unittest.TestCase):
 
-    # reset_database()
     host = "127.0.0.1"
     port = "8888"
     server_url = f"http://{host}:{port}"
+
+    def setUp(self) -> None:
+        requests.post(f"{self.server_url}/database/reset")
+
+    def tearDown(self) -> None:
+        requests.post(f"{self.server_url}/database/reset")
 
     def test_database_reset(self):
         path = "/database/reset"
