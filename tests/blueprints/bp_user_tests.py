@@ -4,7 +4,6 @@ import requests
 
 class BpUserTests(unittest.TestCase):
 
-    # reset_database()
     host = "127.0.0.1"
     port = "9999"
     server_url = f"http://{host}:{port}"
