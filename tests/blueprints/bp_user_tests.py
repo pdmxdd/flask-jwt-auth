@@ -1,14 +1,12 @@
-import os
 import unittest
 import requests
-from flask import Flask
 
 
 class BpUserTests(unittest.TestCase):
 
     # reset_database()
     host = "127.0.0.1"
-    port = "8888"
+    port = "9999"
     server_url = f"http://{host}:{port}"
 
     def setUp(self) -> None:

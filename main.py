@@ -1,3 +1,4 @@
+import os
 from application_configuration.app import app
 
 
@@ -11,4 +12,4 @@ def register_blueprints():
 
 if __name__ == "__main__":
     register_blueprints()
-    app.run(debug=True, port=8888)
+    app.run(debug=True, port=os.environ.get("API_PORT"))
