@@ -41,4 +41,3 @@ class AuthorizationTests(unittest.TestCase):
         result = verify_token(token, "252.144.144.12")
         self.assertFalse(result["success"])
         self.assertEqual("JWT expired. User must re-authenticate for a new token.", result["status"])
-
