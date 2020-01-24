@@ -38,6 +38,7 @@ def verify_token(token_string, ip_address):
     try:
         decoded_token = jwt.decode(str.encode(token_string), key, algorithms=['HS256'])
         if decoded_token["ip_address"] != ip_address:
+            # TODO: log this as a possible attack
             return {"success": False, "status": "JWT error. IP Addresses don't match! User needs to re-authenticate."}
     except jwt.ExpiredSignatureError:
         # need to return JSON error that token is expired

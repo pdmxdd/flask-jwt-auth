@@ -1,7 +1,5 @@
 import unittest
 import time
-import datetime
-from calendar import timegm
 
 from util.authorization import assign_token, verify_token
 
