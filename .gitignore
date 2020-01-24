@@ -4,3 +4,4 @@ env_flask/
 *__pycache__*
 Dockerfile
 init-user-db.sh
+jwt_secret.txt
