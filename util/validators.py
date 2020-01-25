@@ -1,6 +1,7 @@
 from functools import wraps
-from flask import request
+from flask import request, g
 from util.json_response import make_json_response
+from util.authorization import verify_token
 
 
 def bad_json():
@@ -23,3 +24,20 @@ def json_required(required_json_headers):
             return f(*args, **kwargs)
         return wrap
     return requirements
+
+
+def jwt_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if "Authorization" not in request.headers.keys():
+            return make_json_response({"status": "error", "body": "Missing JWT authorization"}, 401)
+
+        payload = verify_token(request.headers.get("Authorization"), request.remote_addr)
+
+        if not payload["success"]:
+            return make_json_response({"status": "error", "body": "Unauthorized"}, 401)
+
+        g.payload = payload["payload"]
+
+        return f(*args, **kwargs)
+    return wrap

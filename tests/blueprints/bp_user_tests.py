@@ -18,6 +18,7 @@ class BpUserTests(unittest.TestCase):
         path = "/user/register"
         resp = requests.post(f"{self.server_url}{path}", json={"email": "email@email.com", "password": "thepassword"})
         self.assertEqual(201, resp.status_code)
+        self.assertTrue("token" in resp.json().keys())
 
     def test_register_duplicate_user(self):
         path = "/user/register"
@@ -31,5 +32,18 @@ class BpUserTests(unittest.TestCase):
         requests.post(f"{self.server_url}/user/register", json={"email": "email@email.com", "password": "thepassword"})
         resp1 = requests.post(f"{self.server_url}{path}", json={"email": "email@email.com", "password": "thepassword"})
         self.assertEqual(200, resp1.status_code)
+        self.assertTrue("token" in resp1.json().keys())
         resp2 = requests.post(f"{self.server_url}{path}", json={"email": "email@email.comm", "password": "nopassword"})
         self.assertEqual(400, resp2.status_code)
+        self.assertFalse("token" in resp2.json().keys())
+
+    def test_get_user_account(self):
+        path = "/user/account"
+        resp = requests.post(f"{self.server_url}/user/register", json={"email": "email@email.com", "password": "thepassword"})
+        resp2 = requests.get(f"{self.server_url}{path}", headers={"Authorization": resp.json().get("token")})
+        self.assertEqual(resp2.status_code, 200)
+        self.assertTrue("id" in resp2.json().keys())
+        self.assertTrue("email" in resp2.json().keys())
+        self.assertTrue("ip_address" in resp2.json().keys())
+        self.assertTrue("iat" in resp2.json().keys())
+        self.assertTrue("exp" in resp2.json().keys())

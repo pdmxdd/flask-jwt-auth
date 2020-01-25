@@ -1,9 +1,10 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, g
 from util.json_response import make_json_response
-from util.validators import json_required
+from util.validators import json_required, jwt_required
 from util.database import commit_to_db
 from util.password import check_password
 from models.user import User
+from util.authorization import assign_token
 
 bp_user = Blueprint(name="bp_user", import_name=__name__, url_prefix="/user")
 
@@ -18,7 +19,11 @@ def register_user():
             "body": f"user with email ({request.json['email']}) already exists"}, 400)
     user = User(request.json["email"], request.json["password"])
     commit_to_db(user)
-    return make_json_response({"status": "success", "body": "user registered"}, 201)
+    return make_json_response({
+        "status": "success",
+        "body": "user registered",
+        "token": assign_token(user.to_dict(), request.remote_addr)}
+        , 201)
 
 
 @bp_user.route("/login", methods=["POST"])
@@ -38,4 +43,14 @@ def login_user():
             "message": "Incorrect user information"
         }, 400)
 
-    return make_json_response(user.to_dict(), 200)
+    return make_json_response({"status": "success",
+                               "message": "user authenticated",
+                               "token": assign_token(user.to_dict(), request.remote_addr)}
+                              , 200)
+
+
+@bp_user.route("/account", methods=["GET"])
+@jwt_required
+def get_user_account():
+    payload = g.payload
+    return make_json_response(payload, 200)
