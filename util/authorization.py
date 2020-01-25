@@ -12,7 +12,6 @@ def get_jwt_secret():
                 os.environ["jwt_secret"] = f.read()
         else:
             jwt_secret = binascii.hexlify(os.urandom(32)).decode()
-            # jwt_secret = Fernet.generate_key().decode()
             with open('jwt_secret.txt', 'w') as f:
                 f.write(jwt_secret)
             os.environ["jwt_secret"] = jwt_secret
