@@ -39,7 +39,8 @@ class BpUserTests(unittest.TestCase):
 
     def test_get_user_account(self):
         path = "/user/account"
-        resp = requests.post(f"{self.server_url}/user/register", json={"email": "email@email.com", "password": "thepassword"})
+        resp = requests.post(f"{self.server_url}/user/register",
+                             json={"email": "email@email.com", "password": "thepassword"})
         resp2 = requests.get(f"{self.server_url}{path}", headers={"Authorization": resp.json().get("token")})
         self.assertEqual(resp2.status_code, 200)
         self.assertTrue("id" in resp2.json().keys())
@@ -47,3 +48,10 @@ class BpUserTests(unittest.TestCase):
         self.assertTrue("ip_address" in resp2.json().keys())
         self.assertTrue("iat" in resp2.json().keys())
         self.assertTrue("exp" in resp2.json().keys())
+
+    def test_get_user_account_bad_token(self):
+        path = "/user/account"
+        resp = requests.post(f"{self.server_url}/user/register",
+                             json={"email": "email@email.com", "password": "thepassword"})
+        resp2 = requests.get(f"{self.server_url}{path}", headers={"Authorization": f"{resp.json().get('token')}a"})
+        self.assertEqual(resp2.status_code, 401)
