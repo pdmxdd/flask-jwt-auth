@@ -13,6 +13,9 @@ class User(db.Model):
         self.email = email
         self.password = hash_password(password)
 
+    def update_password(self, new_password):
+        self.password = hash_password(new_password)
+
     def to_dict(self):
         return {
             "id": self.id,

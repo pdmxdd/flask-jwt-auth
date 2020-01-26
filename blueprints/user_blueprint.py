@@ -54,3 +54,19 @@ def login_user():
 def get_user_account():
     payload = g.payload
     return make_json_response(payload, 200)
+
+
+@bp_user.route("/account", methods=["POST"])
+@jwt_required
+@json_required(["email", "new_password", "confirm_password"])
+def post_user_account():
+    payload = g.payload
+    print(payload)
+    user = User.query.filter_by(id=payload.get('id')).first()
+    if user is None:
+        return make_json_response({"status": "error", "message": "JWT error. User must re-authenticate."}, 400)
+    if request.json.get('new_password') != request.json.get('confirm_password'):
+        return make_json_response({"status": "error", "message": "Passwords don't match!"}, 400)
+    user.update_password(request.json.get('new_password'))
+    commit_to_db(user)
+    return make_json_response({"status": "success", "message": "Account successfully updated"}, 200)

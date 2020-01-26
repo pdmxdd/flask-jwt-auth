@@ -55,3 +55,17 @@ class BpUserTests(unittest.TestCase):
                              json={"email": "email@email.com", "password": "thepassword"})
         resp2 = requests.get(f"{self.server_url}{path}", headers={"Authorization": f"{resp.json().get('token')}a"})
         self.assertEqual(resp2.status_code, 401)
+
+    def test_post_user_account_change_password(self):
+        path = "/user/account"
+        resp = requests.post(f"{self.server_url}/user/register",
+                             json={"email": "email@email.com", "password": "thepassword"})
+        resp2 = requests.post(f"{self.server_url}{path}",
+                              headers={"Authorization": f"{resp.json().get('token')}"},
+                              json={"email": "email@email.com",
+                                    "new_password": "newpassword",
+                                    "confirm_password": "newpassword"})
+        self.assertEqual(200, resp2.status_code)
+        resp3 = requests.post(f"{self.server_url}/user/login", json={"email": "email@email.com",
+                                                                     "password": "newpassword"})
+        self.assertEqual(200, resp3.status_code)
