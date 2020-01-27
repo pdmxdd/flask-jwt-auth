@@ -10,13 +10,18 @@ bp_user = Blueprint(name="bp_user", import_name=__name__, url_prefix="/user")
 
 
 @bp_user.route("/register", methods=["POST"])
-@json_required(required_json_headers=["email", "password"])
+@json_required(required_json_headers=["email", "password", "confirm_password"])
 def register_user():
     user_exist = User.query.filter_by(email=request.json["email"]).first()
     if user_exist is not None:
         return make_json_response({
             "status": "error",
             "body": f"user with email ({request.json['email']}) already exists"}, 400)
+    if request.json.get('password') != request.json.get('confirm_password'):
+        return make_json_response({
+            "status": "error",
+            "message": "Passwords don't match!"
+        }, 400)
     user = User(request.json["email"], request.json["password"])
     commit_to_db(user)
     return make_json_response({
