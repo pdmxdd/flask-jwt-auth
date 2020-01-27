@@ -2,6 +2,4 @@ env_flask/
 .idea/
 *.pyc
 *__pycache__*
-Dockerfile
-init-user-db.sh
 jwt_secret.txt
